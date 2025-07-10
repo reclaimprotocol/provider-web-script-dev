@@ -1,0 +1,15 @@
+{
+    "name": "@reclaimprotocol/provider-web-script-dev",
+    "version": "0.1.0",
+    "description": "Reclaim InApp Web User Script Development Environment",
+    "main": "build/index.js",
+    "scripts": {
+        "start": "node build/index.js",
+        "build": "tsc"
+    },
+    "author": "admin@reclaimprotocol.com",
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^5.8.3"
+    }
+}
