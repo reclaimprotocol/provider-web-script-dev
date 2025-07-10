@@ -34,6 +34,9 @@ declare global {
             /**
              * Add any extra data in the verification response.
              * This data will not go through the claim creation process in the attestor.
+             * 
+             * Note: The root level keys in the data object will be displayed to user. Choose a short and meaningful name for these keys. 
+             * For example: `{ "User Information": { "name": "John Doe", "email": "john.doe@example.com" } }`
              */
             updatePublicData: (data: Record<string, any>) => void,
             /**
