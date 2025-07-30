@@ -69,6 +69,8 @@ declare global {
 
     export type RequestMethodType = 'GET' | 'POST';
 
+    export type WebCredentialsType = 'include' | 'same-origin' | 'omit';
+
     export interface HttpClaimRequest {
         url: string | null;
         /**
@@ -87,6 +89,10 @@ declare global {
         expectedPageUrl?: string | null;
         responseMatches: ResponseMatch[];
         responseRedactions: ResponseRedaction[];
+        /**
+         * If not provided, defaults to 'include'
+         */
+        credentials: WebCredentialsType | null;
     }
 
     export interface BodySniff {
