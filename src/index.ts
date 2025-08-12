@@ -1,4 +1,4 @@
-// Comment this out when publishing to devtools
+// WARNING: Comment the below import when when publishing to devtools
 import "./test_env";
 
 const onReady = async () => {

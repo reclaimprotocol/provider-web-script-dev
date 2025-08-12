@@ -18,6 +18,8 @@ const _onMessage = (event: MessageEvent) => {
 
 window.addEventListener("message", _onMessage);
 
+// BELOW ARE THE OBJECTS THAT CAN BE USED TO MOCK THE INAPP SDK's Web Script Environment.
+// Feel free to modify them to test your provider.
 window.Reclaim = {
   version: 1,
   provider: {
