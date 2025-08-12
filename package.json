@@ -1,15 +1,19 @@
 {
-    "name": "@reclaimprotocol/provider-web-script-dev",
-    "version": "0.1.0",
-    "description": "Reclaim InApp Web User Script Development Environment",
-    "main": "build/index.js",
-    "scripts": {
-        "start": "node build/index.js",
-        "build": "tsc"
-    },
-    "author": "admin@reclaimprotocol.com",
-    "license": "MIT",
-    "devDependencies": {
-        "typescript": "^5.8.3"
-    }
+  "name": "@reclaimprotocol/provider-web-script-dev",
+  "version": "0.1.0",
+  "description": "Reclaim InApp Web User Script Development Environment",
+  "main": "build/index.js",
+  "scripts": {
+    "start": "node build/index.js",
+    "build": "tsc",
+    "format": "prettier --write .",
+    "compile": "esbuild --minify --target=chrome58,firefox57,safari11,edge16 src/index.ts --bundle --outfile=build/script.js"
+  },
+  "author": "admin@reclaimprotocol.com",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.25.8",
+    "prettier": "3.6.2",
+    "typescript": "^5.8.3"
+  }
 }
