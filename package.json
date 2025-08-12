@@ -5,9 +5,8 @@
   "main": "build/index.js",
   "scripts": {
     "start": "node build/index.js",
-    "build": "tsc",
     "format": "prettier --write .",
-    "compile": "esbuild --target=chrome58,firefox57,safari11,edge16 src/index.ts --bundle --outfile=build/script.js"
+    "build": "esbuild --target=chrome58,firefox57,safari11,edge16 src/index.ts --bundle --outfile=build/script.js"
   },
   "author": "admin@reclaimprotocol.com",
   "license": "MIT",
