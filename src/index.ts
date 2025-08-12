@@ -1,3 +1,4 @@
+// Comment this out when publishing to devtools
 import "./test_env";
 
 const onReady = async () => {

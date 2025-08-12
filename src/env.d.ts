@@ -17,7 +17,13 @@ declare global {
       /**
        * Start a claim creation with the attestor by sending this request to the inapp sdk.
        */
-      requestClaim: (claim: HttpClaimRequest) => void;
+      requestClaim: (
+        claim: HttpClaimRequest,
+      ) => Promise<ClaimRequestIdentifier | null>;
+      /**
+       * Returns a list of all claims that have been created in the current verification session.
+       */
+      getVerificationStatus: () => Promise<VerificationStatus>;
       /**
        * Notify the inapp sdk that the current page requires user interaction, i.e for logging in, etc.
        * Causes the inapp sdk to display this web page to the user and lets them interact with it.
@@ -43,11 +49,30 @@ declare global {
        * Stop verification and reject any further claims from being created.
        * This is useful when the provider wants to stop the verification process, e.g. when requirements for verification cannot for the user.
        * The `message` provided in the error will be shown to the user.
+       *
+       * This will also update the verification status and stop backend sdk from listening to any more updates.
        */
       reportProviderError: (
         error: { message: string; [key: string]: any } | string,
       ) => void;
+      /**
+       * Update the default error message that will be shown to the user when the verification fails.
+       */
+      updateDefaultErrorMessage: (errorMessage: string) => void;
     };
+  }
+
+  export interface VerificationStatus {
+    isCompleted: boolean;
+    error: ReclaimClaimCreationException | null;
+    claims: ClaimInformation[];
+  }
+
+  export interface ClaimInformation {
+    id: ClaimRequestIdentifier;
+    request: HttpClaimRequest;
+    error: ReclaimClaimCreationException | null;
+    isPending: boolean;
   }
 
   export interface ReclaimHttpProvider {
@@ -142,6 +167,12 @@ declare global {
      */
     matchType?: ResponseRedactionMatchType | null;
     hash?: string | null;
+  }
+
+  export type ClaimRequestIdentifier = string;
+
+  export interface ReclaimClaimCreationException {
+    message: string;
   }
 }
 

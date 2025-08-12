@@ -81,8 +81,9 @@ window.Reclaim = {
     useIncognitoWebview: null,
   },
   parameters: {},
-  requestClaim: (claim: HttpClaimRequest) => {
+  requestClaim: async (claim: HttpClaimRequest) => {
     _sendMessage("requestClaim", claim);
+    return "0xsome-hex-encoded-request-id";
   },
   requiresUserInteraction: (isUserInteractionRequired: boolean) => {
     _sendMessage("requiresUserInteraction", isUserInteractionRequired);
@@ -95,5 +96,68 @@ window.Reclaim = {
   },
   reportProviderError: (error) => {
     _sendMessage("reportProviderError", error);
+  },
+  updateDefaultErrorMessage: (errorMessage: string) => {
+    _sendMessage("updateDefaultErrorMessage", errorMessage);
+  },
+  getVerificationStatus: async () => {
+    return {
+      isCompleted: false,
+      error: null,
+      claims: [
+        {
+          id: "0xsome-hex-encoded-request-id",
+          request: {
+            url: "https://example.com/",
+            expectedPageUrl: "https://example.com",
+            urlType: "TEMPLATE",
+            method: "GET",
+            responseMatches: [
+              {
+                value: "{{pageTitle}}",
+                type: "contains",
+                invert: false,
+                description: null,
+                order: 0,
+                isOptional: false,
+              },
+              {
+                value:
+                  "\u003Ca href={{ianaLinkUrl}}\u003EMore information...\u003C/a\u003E",
+                type: "contains",
+                invert: false,
+                description: "",
+                order: null,
+                isOptional: false,
+              },
+            ],
+            responseRedactions: [
+              {
+                xPath: "//title/text()",
+                jsonPath: "",
+                regex: "(.*)",
+                hash: "",
+              },
+              {
+                xPath: "/html/body/div[1]/p[2]/a",
+                jsonPath: "",
+                regex:
+                  "\u003Ca href=(.*)\u003EMore information...\u003C/a\u003E",
+                hash: null,
+              },
+            ],
+            bodySniff: {
+              enabled: false,
+              template: "",
+            },
+            requestHash:
+              "0x49629317122233f49c189cda3532a62547d97660dd82aa2bb147a75571d56cfd",
+            credentials: null,
+          },
+          error: null,
+          isPending: true,
+        },
+      ],
+    };
   },
 };
