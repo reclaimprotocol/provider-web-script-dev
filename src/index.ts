@@ -1,5 +1,9 @@
-// WARNING: Comment the below import when when publishing to devtools
-import "./test_env";
+/// You can write your provider script code here.
+/// No need to import any files.
+/// To build a production release for publishing on devtools: `npm run build`
+/// To build a release for development & testing with mock data: `npm run build:dev`. You can edit the mock data in `dev.ts` file to update any mock data and/or declare any custom types in `website.d.ts` file.
+
+/// BTW you can import & use any npm browser compatible packages here. They will be bundled with the script.
 
 const onReady = async () => {
   window.Reclaim.updatePublicData({
@@ -40,5 +44,5 @@ setTimeout(
     }
   },
   // Ensure page elements are loaded
-  1000,
+  1000
 );
