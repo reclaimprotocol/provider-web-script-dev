@@ -85,8 +85,12 @@ const onReady = async () => {
 ## File Structure
 
 - `src/index.ts` - Main script (edit this)
-- `src/test_env.ts` - Mock Reclaim SDK environment (edit this to simulate Reclaim web script environment)
-- `src/env.d.ts` - TypeScript definitions
+- `src/dev.ts` - Development environment setup and mock data
+- `src/website.d.ts` - TypeScript definitions for website-specific types
+- `src/support/` - Support files (do not edit)
+  - `src/support/env.d.ts` - TypeScript definitions for Reclaim SDK
+  - `src/support/mock_apis.ts` - Mock API implementations
+  - `src/support/dev_index.ts` - Development entry point
 
 ## Notes
 
