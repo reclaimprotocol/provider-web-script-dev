@@ -19,6 +19,7 @@ Development environment for Reclaim Devtools Provider developers to simulate, te
    - DO NOT EDIT anything inside `src/support` directory.
 
 3. **Build the development script**:
+   - For building a bundle for your development testing, use the following script to build with development overrides from `src/dev.ts` and mock data.
 
    ```bash
    npm run build:dev
