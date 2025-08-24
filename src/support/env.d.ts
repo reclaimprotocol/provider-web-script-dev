@@ -21,7 +21,7 @@ declare global {
        * Start a claim creation with the attestor by sending this request to the inapp sdk.
        */
       requestClaim: (
-        claim: HttpClaimRequest
+        claim: HttpClaimRequest,
       ) => Promise<ClaimRequestIdentifier | null>;
       /**
        * Returns a list of all claims that have been created in the current verification session.
@@ -56,7 +56,7 @@ declare global {
        * This will also update the verification status and stop backend sdk from listening to any more updates.
        */
       reportProviderError: (
-        error: { message: string; [key: string]: any } | string
+        error: { message: string; [key: string]: any } | string,
       ) => void;
       /**
        * Update the default error message that will be shown to the user when the verification fails.

@@ -18,7 +18,7 @@
   window.addEventListener("message", _onMessage);
 
   console.warn(
-    "USING MOCK IMPLEMENTATION OF INAPP SDK's WEB SCRIPT ENVIRONMENT"
+    "USING MOCK IMPLEMENTATION OF INAPP SDK's WEB SCRIPT ENVIRONMENT",
   );
 })();
 
