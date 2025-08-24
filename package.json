@@ -7,7 +7,8 @@
     "start": "node build/index.js",
     "format": "prettier --write .",
     "build:dev": "esbuild --target=chrome58,firefox57,safari11,edge16 src/support/dev_index.ts --bundle --outfile=build/script.js",
-    "build": "esbuild --target=chrome58,firefox57,safari11,edge16 src/index.ts --bundle --outfile=build/script.js"
+    "build": "esbuild --target=chrome58,firefox57,safari11,edge16 src/index.ts --bundle --outfile=build/script.js",
+    "strip": "read -p \"Input file path: \" INPUT_FILE_PATH && node ./scripts/strip_types.js $INPUT_FILE_PATH build/stripped_script.js"
   },
   "author": "admin@reclaimprotocol.com",
   "license": "MIT",
