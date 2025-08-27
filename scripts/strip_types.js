@@ -15,7 +15,7 @@ const main = async () => {
   const [inputPath, outputPath] = args.map((p) => resolve(p));
 
   console.info(
-    `Reading from ${inputPath} and writing with stripped types to ${outputPath}`
+    `Reading from ${inputPath} and writing with stripped types to ${outputPath}`,
   );
 
   try {
