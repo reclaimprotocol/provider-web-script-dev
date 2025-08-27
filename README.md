@@ -96,7 +96,17 @@ const onReady = async () => {
 
 ## Tip
 
-Write your providers in separate files inside `src/providers/` and import whichever you wish to build in `src/index.ts`.
+1. Write your providers in separate files inside `src/providers/` and import whichever you wish to build in `src/index.ts`.
+2. You get suggestions in js & ts to help you write more accurate code that supports more platforms. For example:
+
+```sh
+✘ [ERROR] Transforming destructuring to the configured target environment ("chrome58", "edge16", "firefox57", "safari11") is not supported yet
+
+    src/providers/7e5b59a9-56c5-490c-a169-82a443f9b507.js:226:19:
+      226 │             async ({ requestId, response }) => {
+          ╵                    ^
+
+```
 
 ## Notes
 
