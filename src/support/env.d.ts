@@ -21,7 +21,7 @@ declare global {
        * Start a claim creation with the attestor by sending this request to the inapp sdk.
        */
       requestClaim: (
-        claim: HttpClaimRequest,
+        claim: HttpClaimRequest
       ) => Promise<ClaimRequestIdentifier | null>;
       /**
        * Returns a list of all claims that have been created in the current verification session.
@@ -46,8 +46,10 @@ declare global {
        *
        * Note: The root level keys in the data object will be displayed to user. Choose a short and meaningful name for these keys.
        * For example: `{ "User Information": { "name": "John Doe", "email": "john.doe@example.com" } }`
+       *
+       * Passing string in updatePublicData is supported but not recommended.
        */
-      updatePublicData: (data: Record<string, any>) => void;
+      updatePublicData: (data: Record<string, any> | string) => void;
       /**
        * Stop verification and reject any further claims from being created.
        * This is useful when the provider wants to stop the verification process, e.g. when requirements for verification cannot for the user.
@@ -56,7 +58,7 @@ declare global {
        * This will also update the verification status and stop backend sdk from listening to any more updates.
        */
       reportProviderError: (
-        error: { message: string; [key: string]: any } | string,
+        error: { message: string; [key: string]: any } | string
       ) => void;
       /**
        * Update the default error message that will be shown to the user when the verification fails.
