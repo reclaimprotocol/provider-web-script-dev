@@ -3,6 +3,20 @@
 
 declare global {
   interface Window {
+    reclaimInterceptor: {
+      /**
+       * Add response middleware when using hawkeye
+       *
+       * @param middleware
+       * @param middlewareName Use a non empty string that is not equal to `'null'`.
+       * @returns
+       */
+      addResponseMiddleware: (
+        middleware: (response: any, request: any) => Promise<any>,
+        middlewareName?: string
+      ) => void;
+    };
+
     /**
      * The Reclaim SDK object to interact with the inapp sdk.
      * Ensure this object is available before using any methods or properties.

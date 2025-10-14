@@ -6,6 +6,21 @@ const https = require("https");
 const crypto = require("crypto");
 const readline = require("readline");
 
+/**
+ *
+ * @param {unknown} error
+ * @returns
+ */
+const getErrorMessage = (error) => {
+  return (
+    (typeof error === "object" &&
+      error &&
+      "message" in error &&
+      error.message) ||
+    error
+  );
+};
+
 // Get provider ID from command line arguments
 const providerId = process.argv[2];
 
@@ -15,12 +30,20 @@ if (!providerId) {
   process.exit(1);
 }
 
-// Function to calculate SHA256 hash of a string
+/**
+ * Function to calculate SHA256 hash of a string
+ * @param {string} content
+ * @returns
+ */
 function calculateSHA256(content) {
   return crypto.createHash("sha256").update(content).digest("hex");
 }
 
-// Function to prompt user for confirmation
+/**
+ * Function to prompt user for confirmation
+ * @param {string} question
+ * @returns
+ */
 function askForConfirmation(question) {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -35,7 +58,11 @@ function askForConfirmation(question) {
   });
 }
 
-// Function to make HTTPS request
+/**
+ * Function to make HTTPS request
+ * @param {string} providerId
+ * @returns
+ */
 function fetchProviderData(providerId) {
   return new Promise((resolve, reject) => {
     const url = `https://api.reclaimprotocol.org/api/providers/${providerId}`;
@@ -56,7 +83,9 @@ function fetchProviderData(providerId) {
               resolve(jsonData);
             } catch (error) {
               reject(
-                new Error(`Failed to parse JSON response: ${error.message}`),
+                new Error(
+                  `Failed to parse JSON response: ${getErrorMessage(error)}`
+                )
               );
             }
           } else {
@@ -70,7 +99,12 @@ function fetchProviderData(providerId) {
   });
 }
 
-// Function to update index.ts with new import
+/**
+ * Function to update index.ts with new import
+ *
+ * @param {string} providerId
+ * @returns
+ */
 function updateIndexFile(providerId) {
   const indexPath = path.join(__dirname, "..", "src", "index.ts");
 
@@ -81,7 +115,7 @@ function updateIndexFile(providerId) {
     const importStatement = `import "./providers/${providerId}";`;
     if (content.includes(importStatement)) {
       console.log(
-        `Import for provider '${providerId}' already exists in index.ts`,
+        `Import for provider '${providerId}' already exists in index.ts`
       );
       return;
     }
@@ -92,7 +126,7 @@ function updateIndexFile(providerId) {
       // Split content into lines
       const lines = content.split("\n");
       const commentLineIndex = lines.findIndex((line) =>
-        commentPattern.test(line),
+        commentPattern.test(line)
       );
 
       if (commentLineIndex !== -1) {
@@ -121,17 +155,17 @@ function updateIndexFile(providerId) {
         content = lines.join("\n");
         fs.writeFileSync(indexPath, content, "utf-8");
         console.log(
-          `✓ Removed existing provider imports and added import for provider '${providerId}' to index.ts`,
+          `✓ Removed existing provider imports and added import for provider '${providerId}' to index.ts`
         );
       }
     } else {
       console.warn(
-        "Warning: Could not find the comment \"// import './providers/example';\" in index.ts",
+        "Warning: Could not find the comment \"// import './providers/example';\" in index.ts"
       );
       console.warn("Please manually add the import statement to index.ts");
     }
   } catch (error) {
-    console.error(`Error updating index.ts: ${error.message}`);
+    console.error(`Error updating index.ts: ${getErrorMessage(error)}`);
   }
 }
 
@@ -147,11 +181,10 @@ async function main() {
       return;
     }
 
-    const customInjection = providerData.providers.customInjection;
+    const customInjection = providerData.providers.customInjection ?? "";
 
     if (!customInjection) {
-      console.log(`Provider '${providerId}' has no customInjection code`);
-      return;
+      console.log(`⚠️  Provider '${providerId}' has no customInjection code`);
     }
 
     // Create providers directory if it doesn't exist
@@ -161,43 +194,67 @@ async function main() {
       console.log("✓ Created providers directory");
     }
 
-    // Prepare the new file content
-    const providerFilePath = path.join(providersDir, `${providerId}.js`);
     const providerName = providerData.providers.name || providerId;
+    const providerFilePath = path.join(providersDir, providerId);
+    if (!fs.existsSync(providerFilePath)) {
+      fs.mkdirSync(providerFilePath, { recursive: true });
+      console.log("✓ Created providers directory");
+    }
+
+    const providerScriptFilePath = path.join(providerFilePath, "index.js");
+    const providerConfigFilePath = path.join(providerFilePath, "config.json");
+
+    fs.writeFileSync(
+      providerConfigFilePath,
+      JSON.stringify(providerData.providers, null, 2),
+      {
+        encoding: "utf8",
+        flag: "w+",
+      }
+    );
+
+    console.log(
+      `✓ Written provider config to: src/providers/${providerId}/config.json`
+    );
+
+    // Prepare the new file content
     const providerComment = `// \`${providerName}\` (${providerId}) https://api.reclaimprotocol.org/api/providers/${providerId}\n\n`;
     const fileContent = providerComment + customInjection;
-    
+
     // Check if file already exists and compare hashes
-    if (fs.existsSync(providerFilePath)) {
-      const existingContent = fs.readFileSync(providerFilePath, "utf-8");
+    if (fs.existsSync(providerScriptFilePath)) {
+      const existingContent = fs.readFileSync(providerScriptFilePath, "utf-8");
       const existingHash = calculateSHA256(existingContent);
       const newHash = calculateSHA256(fileContent);
-      
+
       if (existingHash !== newHash) {
-        console.log(`\n⚠️  File already exists: src/providers/${providerId}.js`);
+        console.log(``);
+        console.log(`⚠️  File already exists: src/providers/${providerId}.js`);
         console.log(`   Existing SHA256: ${existingHash}`);
         console.log(`   New SHA256:      ${newHash}`);
-        
+
         const shouldOverwrite = await askForConfirmation(
           "\nThe file has different content. Do you want to overwrite it? (y/n): "
         );
-        
+
         if (!shouldOverwrite) {
           console.log("✗ Skipped overwriting the file");
           return;
         }
       } else {
-        console.log(`✓ File already exists with same content: src/providers/${providerId}.js`);
+        console.log(
+          `✓ File already exists with same content: src/providers/${providerId}/script.js`
+        );
         // Still update index.ts in case it needs updating
         updateIndexFile(providerId);
         return;
       }
     }
-    
+
     // Write the file (either new or confirmed overwrite)
-    fs.writeFileSync(providerFilePath, fileContent, "utf-8");
+    fs.writeFileSync(providerScriptFilePath, fileContent, "utf-8");
     console.log(
-      `✓ Written custom injection code to: src/providers/${providerId}.js`,
+      `✓ Written custom injection code to: src/providers/${providerId}/script.js`
     );
 
     // Update index.ts with the new import
@@ -205,7 +262,7 @@ async function main() {
 
     console.log(`\n✓ Successfully processed provider '${providerId}'`);
   } catch (error) {
-    console.error(`\n✗ Error: ${error.message}`);
+    console.error(`\n✗ Error: ${getErrorMessage(error)}`);
     process.exit(1);
   }
 }
