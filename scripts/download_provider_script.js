@@ -243,7 +243,7 @@ async function main() {
         }
       } else {
         console.log(
-          `✓ File already exists with same content: src/providers/${providerId}/script.js`
+          `✓ File already exists with same content: src/providers/${providerId}/index.js`
         );
         // Still update index.ts in case it needs updating
         updateIndexFile(providerId);
@@ -254,7 +254,7 @@ async function main() {
     // Write the file (either new or confirmed overwrite)
     fs.writeFileSync(providerScriptFilePath, fileContent, "utf-8");
     console.log(
-      `✓ Written custom injection code to: src/providers/${providerId}/script.js`
+      `✓ Written custom injection code to: src/providers/${providerId}/index.js`
     );
 
     // Update index.ts with the new import
