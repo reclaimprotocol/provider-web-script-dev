@@ -60,3 +60,61 @@ export function stringifyValues(
   }
   return newObj;
 }
+
+export interface StorageApi {
+  key: string;
+  get(): Record<string, any>;
+  set(state: Record<string, any>): void;
+  update(
+    change: (oldState: Record<string, any>) => Record<string, any> | null
+  ): Record<string, any>;
+  push(key: string, value: any): void;
+  setValue(key: string, value: any): void;
+}
+
+export class ReclaimStorageManager implements StorageApi {
+  key: string;
+  storage: Storage;
+
+  constructor(key: string, storage = window.sessionStorage) {
+    this.key = key;
+    this.storage = storage;
+  }
+
+  get(): Record<string, any> {
+    return JSON.parse(this.storage.getItem(this.key) || "{}");
+  }
+
+  set(state: Record<string, any>): void {
+    this.storage.setItem(this.key, JSON.stringify(state || {}));
+  }
+
+  update(
+    change: (oldState: Record<string, any>) => Record<string, any> | null
+  ): Record<string, any> {
+    const oldData = this.get();
+    const data = change(oldData);
+    if (data == null) return oldData;
+    this.set(data);
+    return data;
+  }
+
+  push(key: string, value: any): void {
+    this.update((old) => {
+      const o = old;
+      if (!o[key]) {
+        o[key] = [];
+      }
+      o[key].push(value);
+      return o;
+    });
+  }
+
+  setValue(key: string, value: any): void {
+    this.update((old) => {
+      const o = old;
+      o[key] = value;
+      return o;
+    });
+  }
+}

@@ -2,6 +2,8 @@
 /// It is not real and can be used to test your provider script with mock data.
 /// To modify any mock data or api, you can edit the `dev.ts` file instead.
 
+import { ReclaimStorageManager } from "../utils";
+
 /// Add listener that logs all messages that should be recieved by the inapp sdk to the console.
 (() => {
   const _onMessage = (event: MessageEvent) => {
@@ -18,7 +20,7 @@
   window.addEventListener("message", _onMessage);
 
   console.warn(
-    "USING MOCK IMPLEMENTATION OF INAPP SDK's WEB SCRIPT ENVIRONMENT",
+    "USING MOCK IMPLEMENTATION OF INAPP SDK's WEB SCRIPT ENVIRONMENT"
   );
 })();
 
@@ -32,6 +34,9 @@ const _sendMessage = (event: string, data: any) => {
     data: JSON.stringify(data),
   });
 };
+
+const $debug = new ReclaimStorageManager("debug_state");
+(window as any).$debug = $debug;
 
 /// Preloaded with mock data and should be updated (mutated) in dev.ts for testing.
 window.Reclaim = {
@@ -90,9 +95,11 @@ window.Reclaim = {
   },
   canExpectManyClaims: (canExpectManyClaims: boolean) => {
     _sendMessage("canExpectManyClaims", canExpectManyClaims);
+    $debug.push("can_expect_many_claims", canExpectManyClaims);
   },
   updatePublicData: (data: any) => {
     _sendMessage("updatePublicData", data);
+    $debug.push("public_data", data);
   },
   reportProviderError: (error) => {
     _sendMessage("reportProviderError", error);
