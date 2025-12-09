@@ -218,8 +218,8 @@ async function main() {
     );
 
     // Prepare the new file content
-    const providerComment = `// \`${providerName}\` (${providerId}) https://api.reclaimprotocol.org/api/providers/${providerId}\n\n`;
-    const fileContent = providerComment + customInjection;
+    // const providerComment = `// \`${providerName}\` (${providerId}) https://api.reclaimprotocol.org/api/providers/${providerId}\n\n`;
+    const fileContent = customInjection;
 
     // Check if file already exists and compare hashes
     if (fs.existsSync(providerScriptFilePath)) {

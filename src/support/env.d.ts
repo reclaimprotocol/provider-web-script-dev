@@ -39,6 +39,7 @@ declare global {
       ) => Promise<ClaimRequestIdentifier | null>;
       /**
        * Returns a list of all claims that have been created in the current verification session.
+       * @deprecated not yet implemented
        */
       getVerificationStatus: () => Promise<VerificationStatus>;
       /**
@@ -74,10 +75,38 @@ declare global {
       reportProviderError: (
         error: { message: string; [key: string]: any } | string
       ) => void;
+
+      /**
+       * Controls which navigation requests are allowed to launch an applink/deeplink to external applications.
+       *
+       * @since 0.25.0
+       * @param allowedAppLinks - regex expression for urls that should be allowed to launch when requested by webpage. Setting this to null will disable all app links. Defaults to null.
+       * @returns
+       */
+      setAllowedAppLinks: (allowedAppLinks: string | null) => void;
+
+      /**
+       * Updates userAgent of webview. Defaults to null.
+       * @since 0.25.0
+       * @param userAgent - the user agent that webview sould use for webpage and requests made by the webpage. Setting this to null causes the webview to use a default user agent for a platform.
+       * @returns
+       */
+      updateUserAgent: (userAgent: string | null) => void;
+
       /**
        * Update the default error message that will be shown to the user when the verification fails.
+       * @deprecated not yet implemented
        */
       updateDefaultErrorMessage: (errorMessage: string) => void;
+
+      /**
+       * Send logs to the client logging service
+       *
+       * @param logType
+       * @param message
+       * @returns
+       */
+      log: (logType: "error" | "info", message: object) => void;
     };
   }
 
