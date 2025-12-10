@@ -4,16 +4,27 @@ Development environment for Reclaim Devtools Provider developers to simulate, te
 
 ## Usage
 
-### Testing Scripts
+### Preparing
 
 1. **Install dependencies**:
 
    ```bash
    npm install
    ```
+2. **Setup your provider script**:
+
+   ```bash
+   npm run provider
+   ```
+
+   This will prompt you for a provider id. After typing and pressing enter, it'll download the provider and place it in `src/providers/:provider-id` directory.
+
+### Testing Scripts
+
+1. **Work on script downloaded with `npm run provider`**:
 
 2. **Modify the source files**:
-   - Your provider script code will be in `src/index.ts`.
+   - Your provider script code will be imported from `src/index.ts`.
    - To download provider script and import it in `src/index.ts`, you can use `npm run provider`.
    - You can modify `src/dev.ts` file to simulate Reclaim InApp SDK's provider script environment behaviour.
    - You can modify `src/website.d.ts` file to declare any types which are available in the real website for which you're building a provider script.
