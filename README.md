@@ -2,6 +2,10 @@
 
 Development environment for Reclaim Devtools Provider developers to simulate, test, and compile scripts for the Reclaim InApp SDK web environment.
 
+Any custom script you have in provider will be loaded as user script in browser and run on every page load and before every page loading completes.
+
+All available Reclaim APIs are defined as types and documented here: [github.com/reclaimprotocol/src/support/env.d.ts](src/support/env.d.ts)
+
 ## Usage
 
 ### Preparing
