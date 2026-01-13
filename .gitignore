@@ -4,3 +4,5 @@ build/
 command_output.log
 src/providers/**
 !src/providers/.keep
+src/provider.js
+.provider/

@@ -107,7 +107,7 @@ const onReady = async () => {
   - `src/support/env.d.ts` - TypeScript definitions for Reclaim SDK
   - `src/support/mock_apis.ts` - Mock API implementations
   - `src/support/dev_index.ts` - Development entry point
-- `src/providers/` - You can keep source code of different providers here and import them in `src/index.ts` to selectively build for those providers separately
+- `src/provider.js` - Source code of selected provider is here and imported in `src/index.ts`. You can setup another using `npm run provider` or switch to another provider that's locally available by running `npm run switch`.
 
 ## Tip
 

@@ -5,6 +5,7 @@ const path = require("path");
 const https = require("https");
 const crypto = require("crypto");
 const readline = require("readline");
+const { changeProvider } = require("./change_provider.js");
 
 /**
  *
@@ -99,76 +100,6 @@ function fetchProviderData(providerId) {
   });
 }
 
-/**
- * Function to update index.ts with new import
- *
- * @param {string} providerId
- * @returns
- */
-function updateIndexFile(providerId) {
-  const indexPath = path.join(__dirname, "..", "src", "index.ts");
-
-  try {
-    let content = fs.readFileSync(indexPath, "utf-8");
-
-    // Check if import already exists
-    const importStatement = `import "./providers/${providerId}";`;
-    if (content.includes(importStatement)) {
-      console.log(
-        `Import for provider '${providerId}' already exists in index.ts`
-      );
-      return;
-    }
-
-    // Find the comment and remove any imports below it, then add new import
-    const commentPattern = /\/\/ import "\.\/providers\/example";/;
-    if (commentPattern.test(content)) {
-      // Split content into lines
-      const lines = content.split("\n");
-      const commentLineIndex = lines.findIndex((line) =>
-        commentPattern.test(line)
-      );
-
-      if (commentLineIndex !== -1) {
-        // Find where provider imports end (after the comment)
-        let endOfImportsIndex = commentLineIndex + 1;
-
-        // Remove all import lines that come after the comment
-        while (endOfImportsIndex < lines.length) {
-          const line = lines[endOfImportsIndex].trim();
-          // Check if this line is a provider import
-          if (line.startsWith('import "./providers/') && line.endsWith('";')) {
-            lines.splice(endOfImportsIndex, 1);
-          } else if (line === "") {
-            // Skip empty lines but don't remove them
-            endOfImportsIndex++;
-          } else {
-            // Stop at first non-import, non-empty line
-            break;
-          }
-        }
-
-        // Insert the new import right after the comment
-        lines.splice(commentLineIndex + 1, 0, importStatement);
-
-        // Reconstruct the content
-        content = lines.join("\n");
-        fs.writeFileSync(indexPath, content, "utf-8");
-        console.log(
-          `✓ Removed existing provider imports and added import for provider '${providerId}' to index.ts`
-        );
-      }
-    } else {
-      console.warn(
-        "Warning: Could not find the comment \"// import './providers/example';\" in index.ts"
-      );
-      console.warn("Please manually add the import statement to index.ts");
-    }
-  } catch (error) {
-    console.error(`Error updating index.ts: ${getErrorMessage(error)}`);
-  }
-}
-
 // Main function
 async function main() {
   try {
@@ -188,7 +119,7 @@ async function main() {
     }
 
     // Create providers directory if it doesn't exist
-    const providersDir = path.join(__dirname, "..", "src", "providers");
+    const providersDir = path.join(process.cwd(), ".provider", "providers");
     if (!fs.existsSync(providersDir)) {
       fs.mkdirSync(providersDir, { recursive: true });
       console.log("✓ Created providers directory");
@@ -214,7 +145,7 @@ async function main() {
     );
 
     console.log(
-      `✓ Written provider config to: src/providers/${providerId}/config.json`
+      `✓ Written provider config to: .provider/providers/${providerId}/config.json`
     );
 
     // Prepare the new file content
@@ -229,7 +160,7 @@ async function main() {
 
       if (existingHash !== newHash) {
         console.log(``);
-        console.log(`⚠️  File already exists: src/providers/${providerId}.js`);
+        console.log(`⚠️  File already exists: .provider/providers/${providerId}.js`);
         console.log(`   Existing SHA256: ${existingHash}`);
         console.log(`   New SHA256:      ${newHash}`);
 
@@ -243,22 +174,16 @@ async function main() {
         }
       } else {
         console.log(
-          `✓ File already exists with same content: src/providers/${providerId}/index.js`
+          `✓ File already exists with same content: .provider/providers/${providerId}/index.js`
         );
-        // Still update index.ts in case it needs updating
-        updateIndexFile(providerId);
         return;
       }
     }
 
     // Write the file (either new or confirmed overwrite)
     fs.writeFileSync(providerScriptFilePath, fileContent, "utf-8");
-    console.log(
-      `✓ Written custom injection code to: src/providers/${providerId}/index.js`
-    );
 
-    // Update index.ts with the new import
-    updateIndexFile(providerId);
+    await changeProvider(providerId);
 
     console.log(`\n✓ Successfully processed provider '${providerId}'`);
   } catch (error) {
