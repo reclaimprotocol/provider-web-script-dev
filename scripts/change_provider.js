@@ -1,5 +1,6 @@
 
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 import path from 'path';
 
 /**
@@ -32,4 +33,13 @@ export async function changeProvider(providerId) {
 
     fs.symlinkSync(providerScriptFilePath, 'src/provider.js');
     fs.symlinkSync(providerConfigFilePath, 'src/providerConfig.json');
+}
+
+export const getSelectedProvider = () => {
+    return fsPromises.readFile('.provider/selected', 'utf-8').then((data) => data.trim()).catch((err) => {
+        if (!err.toString().includes('no such file or directory')) {
+            console.error(err);
+        }
+        return '';
+    });
 }
