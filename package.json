@@ -10,7 +10,8 @@
     "build": "esbuild --target=chrome58,firefox57,safari11,edge16 src/index.ts --bundle --outfile=build/script.js",
     "strip": "read -p \"Input file path: \" INPUT_FILE_PATH && node ./scripts/strip_types.js $INPUT_FILE_PATH build/stripped_script.js",
     "provider": "read -p \"Input Provider ID: \" INPUT_PROVIDER_ID && node ./scripts/download_provider_script.js $INPUT_PROVIDER_ID",
-    "switch": "node ./scripts/switch_provider.js"
+    "switch": "node ./scripts/switch_provider.js",
+    "try": "node ./scripts/try.js"
   },
   "author": "admin@reclaimprotocol.com",
   "license": "MIT",

@@ -3,6 +3,7 @@
 /// To modify any mock data or api, you can edit the `dev.ts` file instead.
 
 import { ReclaimStorageManager } from "../utils";
+import providerConfig from "../providerConfig.json";
 
 /// Add listener that logs all messages that should be recieved by the inapp sdk to the console.
 (() => {
@@ -41,50 +42,11 @@ const $debug = new ReclaimStorageManager("debug_state");
 /// Preloaded with mock data and should be updated (mutated) in dev.ts for testing.
 window.Reclaim = {
   version: 1,
-  provider: {
-    name: "Stub Provider",
-    description: "Stub Provider Description",
-    loginUrl: "https://example.com/",
-    userAgent: {
-      android: null,
-      ios: null,
-    },
-    geoLocation: "{{DYNAMIC_GEO}}",
-    requestData: [
-      {
-        url: "https://example.com/",
-        expectedPageUrl: "https://example.com",
-        urlType: "TEMPLATE",
-        method: "GET",
-        responseMatches: [
-          {
-            value: "{{pageTitle}}",
-            type: "contains",
-            invert: false,
-            order: 0,
-            isOptional: false,
-          },
-        ],
-        responseRedactions: [
-          {
-            xPath: "//title/text()",
-            jsonPath: "",
-            regex: "(.*)",
-            hash: "",
-          },
-        ],
-        bodySniff: {
-          enabled: false,
-          template: "",
-        },
-        requestHash:
-          "0x49629317122233f49c189cda3532a62547d97660dd82aa2bb147a75571d56cfd",
-        credentials: null,
-      },
-    ],
-    additionalClientOptions: null,
-    useIncognitoWebview: null,
-  },
+  provider: (() => {
+    const data = { ...providerConfig };
+    delete (data as any).customInjection;
+    return data as any as ReclaimHttpProvider;
+  })(),
   parameters: {},
   requestClaim: async (claim: HttpClaimRequest) => {
     _sendMessage("requestClaim", claim);
@@ -167,4 +129,27 @@ window.Reclaim = {
       ],
     };
   },
+  setAllowedAppLinks: (allowedAppLinks: string | null) => {
+    _sendMessage("allowedAppLinks", allowedAppLinks);
+    $debug.push("allowed_app_links", allowedAppLinks);
+  },
+  updateUserAgent: (userAgent: string | null) => {
+    _sendMessage("userAgent", userAgent);
+    $debug.push("user_agent", userAgent);
+  },
+  log: (logType: "error" | "info", message: object) => {
+    if (logType === 'error') {
+      console.error({
+        type: 'error',
+        data: message,
+        debug: true
+      })
+    } else {
+      console.info({
+        type: 'info',
+        data: message,
+        debug: true
+      })
+    }
+  }
 };

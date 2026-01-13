@@ -20,6 +20,7 @@ export async function changeProvider(providerId) {
     }
 
     const providerScriptFilePath = path.join(providerFilePath, "index.js");
+    const providerConfigFilePath = path.join(providerFilePath, "config.json");
 
     fs.mkdirSync('.provider', { recursive: true });
 
@@ -30,4 +31,5 @@ export async function changeProvider(providerId) {
     }
 
     fs.symlinkSync(providerScriptFilePath, 'src/provider.js');
+    fs.symlinkSync(providerConfigFilePath, 'src/providerConfig.json');
 }
