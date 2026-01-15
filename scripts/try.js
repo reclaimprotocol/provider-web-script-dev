@@ -37,7 +37,7 @@ async function main() {
         const browser = await chromium.launch({
             headless: false, proxy: {
                 server: 'http://brd.superproxy.io:33335',
-                username: 'brd-customer-hl_e7eb9b8d-zone-reclaim_test-country-in',
+                username: 'brd-customer-hl_e7eb9b8d-zone-reclaim_test-country-in-session-abc',
                 password: 'ncfrky7hj9i3'
             }
         });
