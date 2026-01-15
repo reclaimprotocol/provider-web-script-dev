@@ -34,7 +34,13 @@ async function main() {
         const { chromium } = require('playwright');
 
         console.log('Launching Chromium...');
-        const browser = await chromium.launch({ headless: false });
+        const browser = await chromium.launch({
+            headless: false, proxy: {
+                server: 'http://brd.superproxy.io:33335',
+                username: 'brd-customer-hl_e7eb9b8d-zone-reclaim_test-country-in',
+                password: 'ncfrky7hj9i3'
+            }
+        });
         const context = await browser.newContext();
 
         const buildScriptPath = path.join(__dirname, '../build/script.js');
