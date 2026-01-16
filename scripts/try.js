@@ -78,7 +78,11 @@ async function main() {
 
         const page = await context.newPage();
 
-        page.goto(providerConfig.loginUrl);
+        try {
+            await page.goto(providerConfig.loginUrl);
+        } catch (e) {
+            console.error(`An error occurred when going to page: ${providerConfig.loginUrl}`, e);
+        }
 
         console.log('Browser launched. Navigate to a page to test the script.');
         console.log('Press Ctrl+C to stop.');
