@@ -34,12 +34,20 @@ async function main() {
         const { chromium } = require('playwright');
 
         console.log('Launching Chromium...');
+
+        const proxyConfig = {
+            server: process.env.PROXY_SERVER,
+            username: process.env.PROXY_USERNAME,
+            password: process.env.PROXY_PASSWORD
+        };
+
         const browser = await chromium.launch({
-            headless: false, proxy: {
-                server: 'http://brd.superproxy.io:33335',
-                username: 'brd-customer-hl_e7eb9b8d-zone-reclaim_test-country-in-session-abc',
-                password: 'ncfrky7hj9i3'
-            }
+            headless: false,
+            proxy: proxyConfig.server ? {
+                server: proxyConfig.server,
+                username: proxyConfig.username,
+                password: proxyConfig.password
+            } : undefined
         });
         const context = await browser.newContext();
 
