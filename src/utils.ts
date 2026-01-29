@@ -16,6 +16,23 @@ export function getElementByXPath(xpath: string) {
   return result.singleNodeValue;
 }
 
+export function launchOnReady(callback: () => void) {
+  let didRun = false;
+  const run = () => {
+    if (didRun) return;
+    didRun = true;
+
+    setTimeout(callback, 500);
+  }
+
+  if (document.readyState === 'complete') {
+    run();
+  } else {
+    document.addEventListener('load', run, { once: true });
+    window.addEventListener('load', run, { once: true });
+  }
+}
+
 /**
  * Use this function to write documentation comments in typescript.
  * Typescript compilers like tsc, esbuild, swc, etc remove comments when transpiled to `js`.
@@ -25,7 +42,7 @@ export function getElementByXPath(xpath: string) {
  *
  * @param {string} _documentation
  */
-export function notes(_documentation: string) {}
+export function notes(_documentation: string) { }
 
 /**
  * @param value

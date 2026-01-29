@@ -64,7 +64,7 @@ declare global {
        *
        * Passing string in updatePublicData is supported but not recommended.
        */
-      updatePublicData: (data: Record<string, any> | string) => void;
+      updatePublicData: (data: Record<string, any>) => void;
       /**
        * Stop verification and reject any further claims from being created.
        * This is useful when the provider wants to stop the verification process, e.g. when requirements for verification cannot for the user.
@@ -73,7 +73,7 @@ declare global {
        * This will also update the verification status and stop backend sdk from listening to any more updates.
        */
       reportProviderError: (
-        error: { message: string; [key: string]: any } | string
+        error: { message: string;[key: string]: any } | string
       ) => void;
 
       /**
@@ -253,4 +253,4 @@ declare global {
   }
 }
 
-export {};
+export { };
