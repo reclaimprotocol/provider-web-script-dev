@@ -32,6 +32,11 @@ export async function changeProvider(providerId) {
     }
 
     fs.symlinkSync(providerScriptFilePath, 'src/provider.js');
+
+    if (fs.existsSync('src/providerConfig.json')) {
+        fs.unlinkSync('src/providerConfig.json');
+    }
+
     fs.symlinkSync(providerConfigFilePath, 'src/providerConfig.json');
 }
 
