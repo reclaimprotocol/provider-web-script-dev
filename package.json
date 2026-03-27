@@ -11,6 +11,7 @@
     "strip": "read -p \"Input file path: \" INPUT_FILE_PATH && node ./scripts/strip_types.js $INPUT_FILE_PATH build/stripped_script.js",
     "provider": "read -p \"Input Provider ID: \" INPUT_PROVIDER_ID && node ./scripts/download_provider_script.js $INPUT_PROVIDER_ID",
     "switch": "node ./scripts/switch_provider.js",
+    "shitios": "bash ./scripts/ios.sh",
     "try": "node ./scripts/try.js"
   },
   "author": "admin@reclaimprotocol.com",

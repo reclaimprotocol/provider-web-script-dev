@@ -43,6 +43,7 @@ async function main() {
 
         const browser = await chromium.launch({
             headless: false,
+            args: ['--remote-debugging-port=9222'],
             proxy: proxyConfig.server ? {
                 server: proxyConfig.server,
                 username: proxyConfig.username,
@@ -86,6 +87,16 @@ async function main() {
 
         console.log('Browser launched. Navigate to a page to test the script.');
         console.log('Press Ctrl+C to stop.');
+
+        // The CDP Endpoint is accessible via the remote debugging port
+        try {
+            const response = await fetch('http://127.0.0.1:9222/json/version');
+            const data = await response.json();
+            const cdpUrl = data.webSocketDebuggerUrl;
+            console.log('CDP WebSocket Endpoint:', cdpUrl);
+        } catch (e) {
+            console.error('Failed to fetch CDP endpoint:', String(e));
+        }
 
         // Keep the process alive
         await new Promise(() => { });

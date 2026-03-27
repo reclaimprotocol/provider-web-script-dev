@@ -106,7 +106,7 @@ declare global {
        * @param message
        * @returns
        */
-      log: (logType: "error" | "info", message: object) => void;
+      log: (logType: "error" | "info", message: object | string) => void;
     };
   }
 
