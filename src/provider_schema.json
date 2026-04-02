@@ -1,0 +1,238 @@
+{
+  "$ref": "#/definitions/ReclaimProviderConfigWithRequestSpec",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "BodySniff": {
+      "additionalProperties": false,
+      "description": "Defines the configuration for identifying/sniffing the request body.",
+      "properties": {
+        "enabled": {
+          "description": "Indicates whether body capturing is enabled",
+          "type": "boolean"
+        },
+        "template": {
+          "description": "The template string used to match or capture the body. Supports template variable declaration using `{{variable}}` syntax. If parameter name is suffixed with `_GRD`, greedy matching with value is used otherwise lazy.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "template"
+      ],
+      "type": "object"
+    },
+    "InjectedRequestSpec": {
+      "additionalProperties": true,
+      "description": "Specific marker interface for injected request specifications.",
+      "properties": {
+        "bodySniff": {
+          "$ref": "#/definitions/BodySniff",
+          "description": "Identifies and captures the request body if enabled"
+        },
+        "method": {
+          "description": "The HTTP method used for the request. Defaults to 'GET'.",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ],
+          "type": "string"
+        },
+        "multiple": {
+          "description": "Whether request matching this spec is allowed to appear multiple times in list of proofs. Defaults to true.",
+          "type": "boolean"
+        },
+        "required": {
+          "description": "Whether request matching this spec is required and always expected in list of proofs Defaults to true.",
+          "type": "boolean"
+        },
+        "responseMatches": {
+          "description": "Required matching configurations for the HTTP response. Atleast one response match must be provided.",
+          "items": {
+            "$ref": "#/definitions/ResponseMatchSpec"
+          },
+          "type": "array"
+        },
+        "responseRedactions": {
+          "description": "Redaction rules applied to the HTTP response before passing to attestors",
+          "items": {
+            "$ref": "#/definitions/ResponseRedactionSpec"
+          },
+          "type": "array"
+        },
+        "templateParams": {
+          "description": "Template parameter variables for the request spec that should be replaced with real values during dynamic request spec construction.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "url": {
+          "description": "The URL or generic path of the HTTP request. When `urlType` is 'TEMPLATE', supports template variable declaration using `{{variable}}` syntax. If parameter name is suffixed with `_GRD`, greedy matching with value is used otherwise lazy.",
+          "type": "string"
+        },
+        "urlType": {
+          "description": "Type or representation of the URL. If not provided, defaults to 'TEMPLATE' if url includes `{{` and 'CONSTANT' otherwise.",
+          "enum": [
+            "TEMPLATE",
+            "CONSTANT"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "bodySniff",
+        "method",
+        "responseMatches",
+        "responseRedactions",
+        "url",
+        "urlType"
+      ],
+      "type": "object"
+    },
+    "InterceptorRequestSpec": {
+      "additionalProperties": false,
+      "description": "Specific marker interface for intercepted request specifications.",
+      "properties": {
+        "bodySniff": {
+          "$ref": "#/definitions/BodySniff",
+          "description": "Identifies and captures the request body if enabled"
+        },
+        "method": {
+          "description": "The HTTP method used for the request. Defaults to 'GET'.",
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ],
+          "type": "string"
+        },
+        "responseMatches": {
+          "description": "Required matching configurations for the HTTP response. Atleast one response match must be provided.",
+          "items": {
+            "$ref": "#/definitions/ResponseMatchSpec"
+          },
+          "type": "array"
+        },
+        "responseRedactions": {
+          "description": "Redaction rules applied to the HTTP response before passing to attestors",
+          "items": {
+            "$ref": "#/definitions/ResponseRedactionSpec"
+          },
+          "type": "array"
+        },
+        "url": {
+          "description": "The URL or generic path of the HTTP request. When `urlType` is 'TEMPLATE', supports template variable declaration using `{{variable}}` syntax. If parameter name is suffixed with `_GRD`, greedy matching with value is used otherwise lazy.",
+          "type": "string"
+        },
+        "urlType": {
+          "description": "Type or representation of the URL. If not provided, defaults to 'TEMPLATE' if url includes `{{` and 'CONSTANT' otherwise.",
+          "enum": [
+            "TEMPLATE",
+            "CONSTANT"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "bodySniff",
+        "method",
+        "responseMatches",
+        "responseRedactions",
+        "url",
+        "urlType"
+      ],
+      "type": "object"
+    },
+    "ReclaimProviderConfigWithRequestSpec": {
+      "additionalProperties": true,
+      "properties": {
+        "allowedInjectedRequestData": {
+          "items": {
+            "$ref": "#/definitions/InjectedRequestSpec"
+          },
+          "type": "array"
+        },
+        "requestData": {
+          "items": {
+            "$ref": "#/definitions/InterceptorRequestSpec"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "requestData",
+        "allowedInjectedRequestData"
+      ],
+      "type": "object"
+    },
+    "ResponseMatchSpec": {
+      "additionalProperties": false,
+      "description": "Specifies a rule to match against a string in response to validate proof content.",
+      "properties": {
+        "invert": {
+          "description": "If true, the match condition is reversed. Defaults to false.",
+          "type": "boolean"
+        },
+        "isOptional": {
+          "description": "If true, the match condition is optional and won't fail if absent. Defaults to false.",
+          "type": "boolean"
+        },
+        "type": {
+          "description": "The matching mechanism to use value as against response. Typically regex or simple string containment.",
+          "enum": [
+            "regex",
+            "contains"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "description": "The pattern or value to look for in the response. When `type` is 'contains', supports template variable declaration using `{{variable}}` syntax (if parameter name is suffixed with `_GRD`, greedy matching with value is used otherwise lazy). When `type` is 'regex', can be used to extract variables using regex named groups.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ResponseRedactionSpec": {
+      "additionalProperties": false,
+      "description": "Specifies redaction rules for obscuring sensitive parts of the response.",
+      "properties": {
+        "hash": {
+          "description": "Optional hashing method applied to the redacted content (e.g., 'oprf'). Oprf will only work for named regex groups.",
+          "enum": [
+            "oprf",
+            "oprf-mpc",
+            "oprf-raw"
+          ],
+          "type": "string"
+        },
+        "jsonPath": {
+          "description": "JSON path for locating the value to redact",
+          "type": "string"
+        },
+        "regex": {
+          "description": "RegEx applied to correctly parse and extract/redact value. Can also be used to extract fields (parameters) using named regex groups.",
+          "type": "string"
+        },
+        "xPath": {
+          "description": "XPath for XML/HTML matching configuration",
+          "type": "string"
+        }
+      },
+      "required": [
+        "jsonPath",
+        "regex",
+        "xPath"
+      ],
+      "type": "object"
+    }
+  }
+}
